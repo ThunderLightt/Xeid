@@ -1,0 +1,185 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Main = Rayfield:CreateWindow({
+   Name = "Xeid | Max's Glitch Per Difficulty Chart Obby",
+   LoadingTitle = "Loading Xeid Script Hub",
+   LoadingSubtitle = "by Xeptic",
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = nil, -- Create a custom folder for your hub/game
+      FileName = "XeidHubConfig"
+   },
+   Discord = {
+      Enabled = false,
+      Invite = "Hello",
+      RememberJoins = true
+   },
+   KeySystem = true, -- Set this to true to use our key system
+   KeySettings = {
+      Title = "Secret",
+      Subtitle = "Only Moritz",
+      Note = "Key is given by the owner.",
+      FileName = "SaveFileRequiredToRun", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+      SaveKey = false, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+      GrabKeyFromSite = true, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+      Key = {https://github.com/ThunderLightt/Xeid/blob/main/Key} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+   }
+})
+
+local A = Main:CreateTab("Main", nil) -- Title, Image
+local ModifiersSec = A:CreateSection("Modifiers")
+
+Rayfield:Notify({
+   Title = "Executed, Enjoy!",
+   Content = "Executed Xeid Script Hub, currently only available game is Max's Glitch Per Difficulty Chart Obby",
+   Duration = 6.5,
+   Image = 4483362458,
+   Actions = { -- Notification Buttons
+      Ignore = {
+         Name = "Okay!",
+         Callback = function()
+         game.Players.LocalPlayer.Character.Humanoid.UseJumpPower = true
+      end
+   },
+},
+})
+
+local WalkSpeedS = A:CreateSlider({
+   Name = "WalkSpeed",
+   Range = {0, 500},
+   Increment = 5,
+   Suffix = "Speed",
+   CurrentValue = 16,
+   Flag = "WalkSpeedSlider", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+       game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+   end,
+})
+
+local WalkSpeedRB = A:CreateButton({
+    Name = "Reset WalkSpeed",
+    Callback = function()
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
+        WalkSpeedS:Set(16) -- The new slider integer value
+    end,
+ })
+
+local JumpPowerS = A:CreateSlider({
+   Name = "JumpPower",
+   Range = {0, 500},
+   Increment = 5,
+   Suffix = "Power",
+   CurrentValue = 6.5,
+   Flag = "JumpPowerSlider", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+       game.Players.LocalPlayer.Character.Humanoid.JumpHeight = Value
+   end,
+})
+
+local JumpPowerRB = A:CreateButton({
+    Name = "Reset JumpPower",
+    Callback = function()
+        game.Players.LocalPlayer.Character.Humanoid.JumpPower = 50
+        JumpPowerS:Set(50) -- The new slider integer value
+    end,
+ })
+
+local HipHeightS = A:CreateSlider({
+    Name = "HipHeight",
+    Range = {-100, 500},
+    Increment = 5,
+    Suffix = "Height",
+    CurrentValue = 0,
+    Flag = "HipHeightSlider", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+    Callback = function(Value)
+        game.Players.LocalPlayer.Character.Humanoid.HipHeight = Value
+    end,
+ })
+
+ local HipHeightRB = A:CreateButton({
+    Name = "Reset HipHeight",
+    Callback = function()
+        game.Players.LocalPlayer.Character.Humanoid.HipHeight = 0
+        HipHeightS:Set(0) -- The new slider integer value
+    end,
+ })
+
+local OtherSec = A:CreateSection("Other")
+
+local Stage = A:CreateInput({
+   Name = "Change Stage (ONLY NUMBERS!)",
+   PlaceholderText = "...",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+        local HumanoidRP = game.Players.LocalPlayer.Character.HumanoidRootPart
+        local leaderstats = game.Players.LocalPlayer.leaderstats
+        local Checkpoints = game.Workspace.Checkpoints
+
+        HumanoidRP.CFrame = Checkpoints[Text].CFrame
+        game.Players.LocalPlayer.leaderstats.Stage.Value = Text
+        game.Players.LocalPlayer.PlayerGui.HUD.StageSelect.SelectedStage.Text = Text
+   end,
+})
+
+local B = Main:CreateTab("AutoFarm", nil)
+
+local AutoFarmT = B:CreateToggle({
+    Name = "Normal Autofarm",
+    CurrentValue = false,
+    Flag = "AutoFarmToggle", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+    Callback = function(Value)
+            print(Value)
+            local HumanoidRP = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local Checkpoints = game.Workspace.Checkpoints
+            local leaderstats = game.Players.LocalPlayer.leaderstats
+            local stage = leaderstats.Stage.Value
+            local stageCheck = 0
+            
+            while stage >= 40 and stage < 61 and Value == true do
+                game:GetService("ReplicatedStorage").Remotes.Rebirth:FireServer()
+                wait(0.2)
+            end
+            
+            while stage >= 0 and stage < 61 and Value == true do
+                HumanoidRP.CFrame = Checkpoints[stage + 1].CFrame
+                stageCheck = leaderstats.Stage.Value
+                wait(0.2)
+            end
+    end,
+ })
+
+ local AutoFarmTT = B:CreateToggle({
+    Name = "No Rebirth Autofarm",
+    CurrentValue = false,
+    Flag = "AutoFarmToggleTwo", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+    Callback = function(Value)
+            print(Value)
+            local HumanoidRP = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local Checkpoints = game.Workspace.Checkpoints
+            local leaderstats = game.Players.LocalPlayer.leaderstats
+            local stage = leaderstats.Stage.Value
+            local stageCheck = 0
+            
+            while stage >= 0 and stage < 61 and Value == true do
+                HumanoidRP.CFrame = Checkpoints[stage + 1].CFrame
+                stageCheck = leaderstats.Stage.Value
+                wait(0.2)
+            end
+    end,
+ })
+ 
+ local SkipStageB = B:CreateButton({
+    Name = "Skip Stage",
+    Callback = function()
+        local HumanoidRP = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local Checkpoints = game.Workspace.Checkpoints
+            local leaderstats = game.Players.LocalPlayer.leaderstats
+            local stage = leaderstats.Stage.Value
+            local stageCheck = 0
+            
+            if stage >= 0 and stage < 61 then
+                HumanoidRP.CFrame = Checkpoints[stage + 1].CFrame
+                stageCheck = leaderstats.Stage.Value
+            end
+    end,
+ })
